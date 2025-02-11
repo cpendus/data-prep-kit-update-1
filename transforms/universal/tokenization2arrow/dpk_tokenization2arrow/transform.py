@@ -40,11 +40,12 @@ class Tokenization2ArrowTransform(TokenizationTransform):
         self.output_folder = self.output_folder if self.output_folder.endswith("/") else f"{self.output_folder}/"
         self.logger.info(f"Tokenizer {config['tokenizer'] = } loaded.")
 
-    def transform_to_arrow(
+    def _transform_to_arrow(
         self, table: pa.Table, file_name: str = None, tokenization_metadata: dict[str, Any] = {}
     ) -> tuple[list[tuple[bytes, str]], dict[str, Any]]:
         """
         table: pa.Table which contains tokenized data
+        file_name: name of the input file which is used for creating metadata files
         This method,
             - Creates new medata data file .docs - contains one row with content arrow file name, number of documents, number of tokens
             - Creates new medata data file .docs.ids - document_id, token count of that document
@@ -126,7 +127,7 @@ class Tokenization2ArrowTransform(TokenizationTransform):
         out_tables, metadata = self.transform(table=table, file_name=file_name)
         # Add to metadata
         self.logger.debug(f"{metadata = }")
-        return self.transform_to_arrow(table=out_tables[0], file_name=file_name, tokenization_metadata=metadata)
+        return self._transform_to_arrow(table=out_tables[0], file_name=file_name, tokenization_metadata=metadata)
 
     def _check_and_convert_tables(
         self, out_tables: list[pa.Table], stats: dict[str, Any]
