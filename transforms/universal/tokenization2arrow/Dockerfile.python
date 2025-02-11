@@ -10,6 +10,7 @@ RUN useradd -ms /bin/bash dpk
 USER dpk
 WORKDIR /home/dpk
 ARG DPK_WHEEL_FILE_NAME
+ARG TRANSFORM_NAME
 
 # Copy and install data processing libraries 
 # These are expected to be placed in the docker context before this is run (see the make image).

@@ -92,7 +92,7 @@ Use the `-n` option of `make` to see the detail of what is done to run the sampl
 
 For example, 
 ```shell
-make run-cli-sample
+make run-cli-sample-python
 ...
 ```
 Then 
