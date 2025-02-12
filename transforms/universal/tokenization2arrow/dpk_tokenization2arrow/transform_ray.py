@@ -28,7 +28,7 @@ class Tokenization2ArrowRayConfiguration(RayTransformRuntimeConfiguration):
         super().__init__(transform_config=Tokenization2ArrowTransformConfiguration())
 
 
-class Tokenization:
+class Tokenization2Arrow:
     def __init__(self, **kwargs):
         self.params = {}
         for key in kwargs:
