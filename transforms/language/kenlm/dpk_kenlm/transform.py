@@ -42,7 +42,7 @@ class KenLMTransform(AbstractTableTransform):
         self.conf = namedtuple("conf", sorted([k for k in config.keys()]))(**config)
 
         if self.conf.process_languages:
-            self.process_languages = set(self.conf.process_languages.split(" "))
+            self.process_languages = set(self.conf.process_languages.replace(" ", "").split(","))
         else:
             self.process_languages = None
         self.models = dict()

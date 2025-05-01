@@ -16,7 +16,7 @@ from collections import namedtuple
 __version__ = "1.0.0"
 short_name = "kenlm"
 description = "compute perplexity using KenLM models"
-ray_invocation = "-m dpk_ml_kenlm.ray.runtime"
+ray_invocation = "-m dpk_kenlm.ray.runtime"
 invocation = "-m dpk_kenlm.runtime"
 
 Param = namedtuple("Param", "Name Required Type Default Description")
@@ -27,7 +27,7 @@ _param_table = [
         Param("model_file", False, str, "{lang}.arpa.bin", "Format string to generate the kenlm model file name"),
         Param("model_path", False, str, ".", "Path to search for knlm model files"),
         Param("output_perplexity_column_name", False, str, "kenlm", "Column name to store the perplexity score label"),
-        Param("process_languages", False, str, "", "Comma/space separated list of language labels to process. Leave empty to attempt to process all languages."),
+        Param("process_languages", False, str, "", "Comma separated list of languages to process. Leave empty to attempt to process all languages."),
         Param("sentence_piece_model_file", False, str, "{lang}.sp.model", "Format string to generate the sentence piece model file name."),
         Param("sentence_piece_model_path", False, str, "", "Path to search for sentence piece model files. Leave empty to search in the kenlm_model_path."),
     ]

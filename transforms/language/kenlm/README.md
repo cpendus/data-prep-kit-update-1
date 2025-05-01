@@ -25,7 +25,7 @@ Computes perplexity using KenLM models.
 | **kenlm_sentence_piece_model_file** | **{lang}.sp.model** | Sentence piece model file pattern. |
 | **kenlm_model_path** | **.** | Path to search for KenKM model files. |
 | **kenlm_sentence_piece_path** | **kenlm_model_path** | Path to search for sentence piece model files. |
-| **pocess_languages** |  | Space separated list of languages to process. |
+| **pocess_languages** |  | Comma separated list of languages to process. |
 
 ## Running the samples
 To run the samples, use the following `make` target
