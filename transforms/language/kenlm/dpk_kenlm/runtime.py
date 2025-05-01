@@ -1,0 +1,85 @@
+# (C) Copyright IBM Corp. 2024.
+# Licensed under the Apache License, Version 2.0 (the “License”);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#  http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an “AS IS” BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+import argparse, sys, os, json
+from data_processing.runtime.pure_python import PythonTransformLauncher
+from data_processing.runtime.pure_python.runtime_configuration import (
+    PythonTransformRuntimeConfiguration,
+)
+
+from data_processing.transform import TransformConfiguration
+from data_processing.utils import get_logger, CLIArgumentProvider, UnrecoverableException, ParamsUtils
+from dpk_kenlm.transform import KenLMTransform, get_transform_params, short_name
+
+logger = get_logger(__name__)
+
+class KenLMConfiguration(TransformConfiguration):
+    """
+    Provides support for configuring and using the associated Transform class include
+    configuration with CLI args and combining of metadata.
+    """
+    def __init__(self):
+        super().__init__(
+            name=short_name,
+            transform_class=KenLMTransform,
+        )
+        from data_processing.utils import get_logger
+        self.logger = get_logger(__name__)
+
+    def add_input_params(self, parser: argparse.ArgumentParser) -> None:
+        """
+        Add Transform-specific arguments to the given  parser.
+        """
+        for key in get_transform_params():
+            parser.add_argument(f"--{short_name}_{key.Name}", type=key.Type, required=key.Required, default=key.Default, help=key.Description)
+
+    def apply_input_params(self, args: argparse.Namespace) -> bool:
+        """
+        Validate and apply the arguments that have been parsed
+        :param args: user defined arguments.
+        :return: True, if validate pass or False otherwise
+        """
+        captured = CLIArgumentProvider.capture_parameters(args, f"{short_name}_", False)
+
+        self.params = self.params | captured
+        self.logger.info(f"{short_name} parameters are: {json.dumps(self.params)}")
+        return True
+
+
+class KenLMRuntime(PythonTransformRuntimeConfiguration):
+    def __init__(self):
+        super().__init__(transform_config=KenLMConfiguration())
+
+
+class KenLM:
+    def __init__(self, **kwargs):
+        self.params = {}
+        for key in kwargs:
+            self.params[key] = kwargs[key]
+        # if input_folder and output_folder are specified, then assume it is data_local_config
+        try:
+            local_conf = {k: self.params[k] for k in ("input_folder", "output_folder")}
+            self.params["data_local_config"] = ParamsUtils.convert_to_ast(local_conf)
+            del self.params["input_folder"]
+            del self.params["output_folder"]
+        except:
+            pass
+
+    def transform(self):
+        sys.argv = ParamsUtils.dict_to_req(d=(self.params))
+        launcher = PythonTransformLauncher(KenLMRuntime())
+        return_code = launcher.launch()
+        return return_code
+
+if __name__ == "__main__":
+    launcher = PythonTransformLauncher(KenLMRuntime())
+    logger.info(f"Launching {short_name} transform")
+    launcher.launch()
