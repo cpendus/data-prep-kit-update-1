@@ -1,7 +1,8 @@
-FROM docker.io/rayproject/ray:2.45.0-py311
+FROM docker.io/rayproject/ray:2.44.1-py312 
 
 USER root
 RUN chown ray:root /home/ray && chmod g=u /home/ray
+COPY models /models
 USER ray
 
 RUN pip install --upgrade --no-cache-dir pip 

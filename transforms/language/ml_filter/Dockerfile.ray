@@ -1,4 +1,4 @@
-FROM docker.io/rayproject/ray:2.36.1-py311
+FROM docker.io/rayproject/ray:2.44.1-py312 
 
 # see https://docs.openshift.com/container-platform/4.17/openshift_images/create-images.html#use-uid_create-images
 USER root

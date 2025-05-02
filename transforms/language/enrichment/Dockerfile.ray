@@ -1,4 +1,5 @@
-FROM docker.io/rayproject/ray:2.36.1-py311
+FROM docker.io/rayproject/ray:2.44.1-py312 
+#FROM docker.io/rayproject/ray:2.36.1-py311
 
 USER root
 RUN chown ray:root /home/ray && chmod g=u /home/ray
