@@ -1,15 +1,12 @@
-ARG BASE_IMAGE=docker.io/rayproject/ray:2.36.1-py312
+FROM docker.io/rayproject/ray:2.44.1-py312
 
-FROM ${BASE_IMAGE}
-
-# see https://docs.openshift.com/container-platform/4.17/openshift_images/create-images.html#use-uid_create-images
 USER root
 RUN chown ray:root /home/ray && chmod g=u /home/ray
 USER ray
 
 # install libraries
 COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r  requirements.txt
+RUN pip install --no-cache-dir -r  requirements.txt && rm requirements.txt
 
 ARG DPK_WHEEL_FILE_NAME
 
@@ -27,8 +24,6 @@ RUN cd workflow_support_lib && pip install --no-cache-dir -e .
 # overwriting the installation of old versions of pydantic
 RUN pip install --no-cache-dir pydantic==2.6.3
 
-# remove credentials-containing file
-RUN rm requirements.txt
 # components
 COPY --chmod=775 --chown=ray:root ./src /pipelines/component/src
 
